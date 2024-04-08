@@ -36,7 +36,7 @@ import {
 } from "@/components/ui/table";
 
 export function RouteComponent() {
-  const [routeData, setRouteData] = useState(null);
+  const [routeData, setRouteData] = useState<any[]>([])
 
   const fetchRouteData = async (searchTerm: any) => {
     try {
