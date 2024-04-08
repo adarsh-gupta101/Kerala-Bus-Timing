@@ -7,7 +7,6 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Kerala Vandi",
   description: "Get the details of All the Buses Running in Kerala using Kerala Vandi",
-  url: "https://keralavandi.adarsh-gupta.in",
 };
 
 export default function RootLayout({
