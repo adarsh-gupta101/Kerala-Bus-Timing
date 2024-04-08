@@ -7,6 +7,10 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
+    './@/**/*.{ts,tsx}', // <- HERE
+    './@/**/*.{js,jsx}', // <- HERE
+
+
   ],
   prefix: "",
   theme: {
