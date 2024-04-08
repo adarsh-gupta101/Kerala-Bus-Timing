@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { AwaitedReactNode, JSX, JSX, JSX, JSX, JSX, JSX, JSX, JSX, JSX, JSX, JSX, JSX, JSXElementConstructor, ReactElement, ReactNode, ReactPortal, SVGProps, SVGProps, SVGProps, SVGProps, SVGProps, SVGProps, SVGProps, SVGProps, SVGProps, SVGProps, SVGProps, SVGProps, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -115,7 +115,7 @@ export function RouteComponent() {
                     <CardContent>
                       <div className="grid gap-4 md:gap-8">
                         <div className="flex flex-col items-start gap-4">
-                          {data.route.map((route) => {
+                          {data.route.map((route: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined) => {
                             return (
                               <div
                                 className="flex justify-center"
@@ -154,7 +154,7 @@ export function RouteComponent() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                        {data.schedule.flatMap((trip, tripIndex) => 
+                        {data.schedule.flatMap((trip: { stations: any[]; }, tripIndex: any) => 
   trip.stations.map((station, stationIndex) => (
     <TableRow key={`${tripIndex}-${stationIndex}`}> {/* Unique key for each row */}
       <TableCell>{station.station}</TableCell>
@@ -177,7 +177,7 @@ export function RouteComponent() {
   );
 }
 
-function HeaderComponent({ onSearch }) {
+function HeaderComponent({ onSearch }: { onSearch: any }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSearchTerm, setSelectedSearchTerm] = useState("");
 
@@ -208,13 +208,13 @@ function HeaderComponent({ onSearch }) {
   // Prepend a default option
   searchTerms.unshift({ label: "Choose a location", value: "" });
 
-  const handleSearchChange = (event) => {
+  const handleSearchChange = (event: { target: { value: any; }; }) => {
     const searchTerm = event.target.value;
     setSelectedSearchTerm(searchTerm);
     onSearch(searchTerm); // Trigger the search immediately on selection change
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     onSearch(searchTerm); // Trigger the search action in the parent component
   };
@@ -238,6 +238,7 @@ function HeaderComponent({ onSearch }) {
 
           <div className="relative">
             <select
+            name="Select Your Place"
               className="w-full bg-white border border-gray-300 shadow-none pl-3 pr-8 h-10 rounded-md appearance-none md:w-2/3 lg:w-1/3 dark:bg-gray-950"
               value={selectedSearchTerm}
               onChange={handleSearchChange}
@@ -338,7 +339,7 @@ function Sidebar() {
   );
 }
 
-function Package2Icon(props) {
+function Package2Icon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -359,7 +360,7 @@ function Package2Icon(props) {
   );
 }
 
-function BellIcon(props) {
+function BellIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -379,7 +380,7 @@ function BellIcon(props) {
   );
 }
 
-function HomeIcon(props) {
+function HomeIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -399,7 +400,7 @@ function HomeIcon(props) {
   );
 }
 
-function PackageIcon(props) {
+function PackageIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -421,7 +422,7 @@ function PackageIcon(props) {
   );
 }
 
-function UsersIcon(props) {
+function UsersIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -443,7 +444,7 @@ function UsersIcon(props) {
   );
 }
 
-function LandmarkIcon(props) {
+function LandmarkIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -467,7 +468,7 @@ function LandmarkIcon(props) {
   );
 }
 
-function BusIcon(props) {
+function BusIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -492,7 +493,7 @@ function BusIcon(props) {
   );
 }
 
-function CalendarIcon(props) {
+function CalendarIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -514,7 +515,7 @@ function CalendarIcon(props) {
   );
 }
 
-function SearchIcon(props) {
+function SearchIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -534,7 +535,7 @@ function SearchIcon(props) {
   );
 }
 
-function ArrowLeftIcon(props) {
+function ArrowLeftIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -554,7 +555,7 @@ function ArrowLeftIcon(props) {
   );
 }
 
-function CalendarClockIcon(props) {
+function CalendarClockIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -578,7 +579,7 @@ function CalendarClockIcon(props) {
   );
 }
 
-function MapPinIcon(props) {
+function MapPinIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
