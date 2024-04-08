@@ -70,11 +70,10 @@ export function RouteComponent() {
             <h1 className="font-semibold text-lg md:text-xl">Route</h1>
             <div className="ml-auto flex items-center gap-2">
               <Button className="hidden sm:flex" variant="outline">
-                Today
+                Coming Soon
               </Button>
               <Button className="hidden md:flex" variant="outline">
-                This Month
-              </Button>
+                Coming Soon              </Button>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
