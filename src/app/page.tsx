@@ -1,5 +1,5 @@
 import Image from "next/image";
-import {RouteComponent} from "@/components/component/route-component"
+import {RouteComponent} from "@/components/component/route-component.jsx"
 
 export default function Home() {
   return (
