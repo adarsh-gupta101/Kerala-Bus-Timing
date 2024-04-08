@@ -40,7 +40,6 @@ import {
 
 export function RouteComponent() {
   const [routeData, setRouteData] = useState(null);
-  console.table(routeData?.busSchedules);
 
   const fetchRouteData = async (searchTerm) => {
     try {
