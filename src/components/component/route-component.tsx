@@ -38,7 +38,7 @@ import {
 export function RouteComponent() {
   const [routeData, setRouteData] = useState(null);
 
-  const fetchRouteData = async (searchTerm) => {
+  const fetchRouteData = async (searchTerm: any) => {
     try {
       const response = await fetch(
         `https://raw.githubusercontent.com/adarsh-gupta101/Kerala-Private-Bus-Timing/main/${searchTerm}.json`
@@ -52,7 +52,7 @@ export function RouteComponent() {
     }
   };
 
-  const handleSearch = (searchTerm) => {
+  const handleSearch = (searchTerm: any) => {
     fetchRouteData(searchTerm);
   };
 
