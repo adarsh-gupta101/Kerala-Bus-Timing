@@ -18,11 +18,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      
       <head>
         {/* logo */}
         <link rel="icon" href="/dle.webp" sizes="any" />
         {/* font */}
       </head>
+
+      <Analytics/>
       <body className={inter.className}>{children}</body>
     </html>
   );
