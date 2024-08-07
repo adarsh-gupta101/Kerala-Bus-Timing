@@ -1,8 +1,7 @@
-
 "use client";
 
 import Link from "next/link";
-import { AwaitedReactNode, JSXElementConstructor, ReactElement, ReactNode, ReactPortal, SVGProps, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,11 +12,7 @@ import {
   DropdownMenuContent,
   DropdownMenu,
 } from "@/components/ui/dropdown-menu";
-import {
-  PopoverTrigger,
-  PopoverContent,
-  Popover,
-} from "@/components/ui/popover";
+import { PopoverTrigger, PopoverContent, Popover } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import {
   CardTitle,
@@ -36,23 +31,75 @@ import {
 } from "@/components/ui/table";
 
 export function RouteComponent() {
-  const [routeData, setRouteData] = useState<any[]>([])
+  const [routeData, setRouteData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [filters, setFilters] = useState({
+    stop: "",
+    time: "",
+    vehicleNumber: "",
+  });
 
-  const fetchRouteData = async (searchTerm: any) => {
+  const fetchRouteData = async (searchTerm) => {
     try {
       const response = await fetch(
         `https://raw.githubusercontent.com/adarsh-gupta101/Kerala-Private-Bus-Timing/main/${searchTerm}.json`
       );
       if (!response.ok) throw new Error("Data fetch failed");
       const data = await response.json();
-      setRouteData(data.busSchedules); // Update your component state with the fetched data
-      console.log(data.busSchedules);
+      setRouteData(data.busSchedules);
+      setFilteredData(data.busSchedules);
     } catch (error) {
       console.error("Failed to fetch route data:", error);
     }
   };
 
-  const handleSearch = (searchTerm: any) => {
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value,
+    }));
+  };
+
+  const applyFilters = () => {
+    let result = routeData;
+
+    if (filters.stop) {
+      result = result.filter((route) =>
+        route.route.some((stop) =>
+          stop.toLowerCase().includes(filters.stop.toLowerCase())
+        )
+      );
+    }
+
+    if (filters.time) {
+      result = result.filter((route) =>
+        route.schedule.some((trip) =>
+          trip.stations.some(
+            (station) =>
+              station.arrivalTime
+                .toLowerCase()
+                .includes(filters.time.toLowerCase()) ||
+              station.departureTime
+                .toLowerCase()
+                .includes(filters.time.toLowerCase())
+          )
+        )
+      );
+    }
+
+    if (filters.vehicleNumber) {
+      result = result.filter((route) =>
+        route["Vehicle Number"]
+          .toLowerCase()
+          .includes(filters.vehicleNumber.toLowerCase())
+      );
+    }
+
+    setFilteredData(result);
+  };
+
+  const handleSearch = (searchTerm) => {
     fetchRouteData(searchTerm);
   };
 
@@ -60,7 +107,6 @@ export function RouteComponent() {
     <div className="grid min-h-screen items-start gap-4 px-4 lg:grid-cols-[280px_1fr]">
       <Sidebar />
       <div className="flex flex-col w-full min-h-screen py-2">
-        {/* Header Component */}
         <HeaderComponent onSearch={handleSearch} />
         <main className="grid gap-4 p-4 md:gap-8 md:p-6">
           <div className="flex items-center gap-4">
@@ -73,7 +119,8 @@ export function RouteComponent() {
                 Coming Soon
               </Button>
               <Button className="hidden md:flex" variant="outline">
-                Coming Soon              </Button>
+                Coming Soon
+              </Button>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -91,85 +138,102 @@ export function RouteComponent() {
               </Popover>
             </div>
           </div>
+          <div className="mb-4 flex gap-4">
+            <input
+              type="text"
+              placeholder="Filter by stop"
+              name="stop"
+              value={filters.stop}
+              onChange={(e)=>handleFilterChange(e)}
+            />
+            <Input
+              type="text"
+              placeholder="Filter by time (e.g., 06:20 am)"
+              name="time"
+              value={filters.time}
+              onChange={handleFilterChange}
+            />
+            <Input
+              type="text"
+              placeholder="Filter by vehicle number"
+              name="vehicleNumber"
+              value={filters.vehicleNumber}
+              onChange={handleFilterChange}
+            />
+            <Button onClick={applyFilters}>Apply Filters</Button>
+          </div>
+
           <div className="grid gap-4">
-            {/* {routeData[0]?.map((data) => {})} */}
-            {routeData?.map((data) => {
-              return (
-                <>
-                  <Card key={Math.random()}>
-                    <CardHeader className="grid gap-1">
-                      <CardTitle className="text-base font-semibold">
-                        Vehicle Numbers
-                      </CardTitle>
-                      <CardDescription className="text-sm text-gray-500 dark:text-gray-400">
-                        {data["Vehicle Number"]}{" "}
-                      </CardDescription>
-                    </CardHeader>
-                  </Card>
+            {filteredData.map((data) => (
+              <div key={data["Vehicle Number"]}>
+                <Card>
+                  <CardHeader className="grid gap-1">
+                    <CardTitle className="text-base font-semibold">
+                      Vehicle Numbers
+                    </CardTitle>
+                    <CardDescription className="text-sm text-gray-500 dark:text-gray-400">
+                      {data["Vehicle Number"]}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Route</CardTitle>
-                      <CardDescription>Route for the vehicle</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid gap-4 md:gap-8">
-                        <div className="flex flex-col items-start gap-4">
-                          {data.route.map((route: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined) => {
-                            return (
-                              <div
-                                className="flex justify-center"
-                                key={Math.random()}
-                              >
-                                <MapPinIcon className="h-6 w-6 text-gray-500 dark:text-gray-400" />
-                                <div className="grid gap-1">
-                                  <h2 className="font-semibold">{route}</h2>
-                                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    {JSON.stringify(route)
-                                      .toLowerCase()
-                                      .replace(/"/g, "")
-                                      .replace(/,/g, " ")}
-                                  </p>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Route</CardTitle>
+                    <CardDescription>Route for the vehicle</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-4 md:gap-8">
+                      <div className="flex flex-col items-start gap-4">
+                        {data.route.map((route, index) => (
+                          <div className="flex justify-center" key={index}>
+                            <MapPinIcon className="h-6 w-6 text-gray-500 dark:text-gray-400" />
+                            <div className="grid gap-1">
+                              <h2 className="font-semibold">{route}</h2>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">
+                                {JSON.stringify(route)
+                                  .toLowerCase()
+                                  .replace(/"/g, "")
+                                  .replace(/,/g, " ")}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </CardContent>
+                </Card>
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Schedule</CardTitle>
-                      <CardDescription>Timings for the vehicle</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Stop</TableHead>
-                            <TableHead>Arrival</TableHead>
-                            <TableHead>Departure</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                        {data.schedule.flatMap((trip: { stations: any[]; }, tripIndex: any) => 
-  trip.stations.map((station, stationIndex) => (
-    <TableRow key={`${tripIndex}-${stationIndex}`}> {/* Unique key for each row */}
-      <TableCell>{station.station}</TableCell>
-      <TableCell>{station.arrivalTime}</TableCell>
-      <TableCell>{station.departureTime}</TableCell>
-    </TableRow>
-  ))
-)}
-                          </TableBody>
-                      </Table>
-                    </CardContent>
-                  </Card>
-                </>
-              );
-            })}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Schedule</CardTitle>
+                    <CardDescription>Timings for the vehicle</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Stop</TableHead>
+                          <TableHead>Arrival</TableHead>
+                          <TableHead>Departure</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {data.schedule.flatMap((trip, tripIndex) =>
+                          trip.stations.map((station, stationIndex) => (
+                            <TableRow key={`${tripIndex}-${stationIndex}`}>
+                              <TableCell>{station.station}</TableCell>
+                              <TableCell>{station.arrivalTime}</TableCell>
+                              <TableCell>{station.departureTime}</TableCell>
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
           </div>
         </main>
       </div>
@@ -177,11 +241,9 @@ export function RouteComponent() {
   );
 }
 
-function HeaderComponent({ onSearch }: { onSearch: any }) {
-  const [searchTerm, setSearchTerm] = useState("");
+function HeaderComponent({ onSearch }) {
   const [selectedSearchTerm, setSelectedSearchTerm] = useState("");
 
-  // Predefined filenames without .json extension
   const filenames = [
     "alappuzha",
     "attingal",
@@ -199,47 +261,30 @@ function HeaderComponent({ onSearch }: { onSearch: any }) {
     "wayanad",
   ];
 
-  // Create search terms from filenames
   const searchTerms = filenames.map((filename) => ({
-    label: filename.charAt(0).toUpperCase() + filename.slice(1), // Capitalize the first letter
+    label: filename.charAt(0).toUpperCase() + filename.slice(1),
     value: filename,
   }));
 
-  // Prepend a default option
   searchTerms.unshift({ label: "Choose a location", value: "" });
 
-  const handleSearchChange = (event: { target: { value: any; }; }) => {
+  const handleSearchChange = (event) => {
     const searchTerm = event.target.value;
     setSelectedSearchTerm(searchTerm);
-    onSearch(searchTerm); // Trigger the search immediately on selection change
+    onSearch(searchTerm);
   };
 
-  const handleSubmit = (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
-    onSearch(searchTerm); // Trigger the search action in the parent component
-  };
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40">
       <Link className="lg:hidden" href="#">
         <Package2Icon className="h-6 w-6" />
       </Link>
       <div className="w-full flex-1">
-        <form onSubmit={handleSubmit}>
-          {/* <div className="relative">
-            <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
-            <Input
-              className="w-full bg-white shadow-none appearance-none pl-8 md:w-2/3 lg:w-1/3 dark:bg-gray-950"
-              placeholder="Search"
-              type="search"
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-          </div> */}
-
+        <form>
           <div className="relative">
             <select
-            name="Select Your Place"
-              className="w-full bg-white border border-gray-300 shadow-none pl-3 pr-8 h-10 rounded-md appearance-none md:w-2/3 lg:w-1/3 dark:bg-gray-950"
+              name="Select Your Place"
+              className="w-full bg-white border border-gray-300 shadow-none pl-3 pr-8 h-10 rounded-md dark:border-gray-700 dark:bg-gray-800"
               value={selectedSearchTerm}
               onChange={handleSearchChange}
             >
@@ -249,97 +294,59 @@ function HeaderComponent({ onSearch }: { onSearch: any }) {
                 </option>
               ))}
             </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-              {/* Icon for dropdown */}
-            </div>
           </div>
         </form>
       </div>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            className="rounded-full border border-slate-200 border-gray-200 w-8 h-8 dark:border-gray-800 dark:border-slate-800"
-            size="icon"
-            variant="ghost"
-          >
-            <img
-              alt="Avatar"
-              className="rounded-full"
-              height="32"
-              src="/placeholder-user.jpg"
-              style={{
-                aspectRatio: "32/32",
-                objectFit: "cover",
-              }}
-              width="32"
-            />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Support</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
     </header>
   );
 }
 
 function Sidebar() {
   return (
-    <div className="hidden lg:block">
-      <div className="flex h-full max-h-screen flex-col gap-2">
-        <div className="flex h-[60px] items-center border-b px-6">
-          <Link className="flex items-center gap-2 font-semibold" href="#">
-            <Package2Icon className="h-6 w-6" />
-            <span className="">Kerala Vandi</span>
-          </Link>
-          <Button className="ml-auto h-8 w-8" size="icon" variant="outline">
-            <BellIcon className="h-4 w-4" />
-          </Button>
-        </div>
-        <div className="flex-1 overflow-auto py-2">
-          <nav className="grid items-start px-4 text-sm font-medium">
-            <Link
-              className="flex items-center gap-3 rounded-lg bg-gray-100 px-3 py-2 text-gray-900  transition-all hover:text-gray-900 dark:bg-gray-800 dark:text-gray-50 dark:hover:text-gray-50"
-              href="#"
-            >
-              <HomeIcon className="h-4 w-4" />
-              Home
-            </Link>
-
-            <Link
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-              href="#"
-            >
-              <LandmarkIcon className="h-4 w-4" />
-              Locations
-            </Link>
-            <Link
-              className="flex items-center gap-3 rounded-lg bg-gray-100 px-3 py-2 text-gray-900  transition-all hover:text-gray-900 dark:bg-gray-800 dark:text-gray-50 dark:hover:text-gray-50"
-              href="#"
-            >
-              <BusIcon className="h-4 w-4" />
-              Routes
-            </Link>
-            <Link
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-              href="#"
-            >
-              <CalendarIcon className="h-4 w-4" />
-              Schedule
-            </Link>
+    <aside className="hidden lg:block">
+      <div className="flex w-[280px] flex-col gap-y-4">
+        <Link href="/" className="hidden items-center space-x-2 lg:flex">
+          <Package2Icon className="h-6 w-6" />
+          <span className="hidden font-bold lg:inline-block">SIDEBAR</span>
+        </Link>
+        <div className="flex-1">
+          <nav className="flex flex-col items-start gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">Dropdown Menu</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-[220px]">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <UsersIcon className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <CreditCardIcon className="mr-2 h-4 w-4" />
+                  <span>Billing</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <SettingsIcon className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <KeyboardIcon className="mr-2 h-4 w-4" />
+                  <span>Keyboard shortcuts</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
         </div>
       </div>
-    </div>
+    </aside>
   );
 }
 
-function Package2Icon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+
+function Package2Icon(
+  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
+) {
   return (
     <svg
       {...props}
@@ -444,7 +451,9 @@ function UsersIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   );
 }
 
-function LandmarkIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function LandmarkIcon(
+  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
+) {
   return (
     <svg
       {...props}
@@ -493,7 +502,9 @@ function BusIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   );
 }
 
-function CalendarIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function CalendarIcon(
+  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
+) {
   return (
     <svg
       {...props}
@@ -535,7 +546,9 @@ function SearchIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   );
 }
 
-function ArrowLeftIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function ArrowLeftIcon(
+  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
+) {
   return (
     <svg
       {...props}
@@ -555,7 +568,9 @@ function ArrowLeftIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>)
   );
 }
 
-function CalendarClockIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function CalendarClockIcon(
+  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
+) {
   return (
     <svg
       {...props}
@@ -595,6 +610,73 @@ function MapPinIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
     >
       <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
       <circle cx="12" cy="10" r="3" />
+    </svg>
+  );
+}
+
+function KeyboardIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="20" height="16" x="2" y="4" rx="2" ry="2" />
+      <path d="M6 8h.001" />
+      <path d="M10 8h.001" />
+      <path d="M14 8h.001" />
+      <path d="M18 8h.001" />
+      <path d="M8 12h.001" />
+      <path d="M12 12h.001" />
+      <path d="M16 12h.001" />
+      <path d="M7 16h10" />
+    </svg>
+  );
+}
+
+function CreditCardIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="20" height="14" x="2" y="5" rx="2" />
+      <line x1="2" x2="22" y1="10" y2="10" />
+    </svg>
+  );
+}
+
+function SettingsIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+      <circle cx="12" cy="12" r="3" />
     </svg>
   );
 }
