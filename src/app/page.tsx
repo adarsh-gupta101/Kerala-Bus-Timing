@@ -1,6 +1,6 @@
 import Image from "next/image";
 import {RouteComponent} from "@/components/component/route-component"
-import Component from "@/components/component/RouteComponent";
+// import Component from "@/components/component/RouteComponent";
 
 export default function Home() {
   return (

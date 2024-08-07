@@ -95,7 +95,7 @@ export function RouteComponent() {
           .includes(filters.vehicleNumber.toLowerCase())
       );
     }
-
+console.log(result)
     setFilteredData(result);
   };
 
@@ -164,8 +164,11 @@ export function RouteComponent() {
           </div>
 
           <div className="grid gap-4">
+            {/* print count of the data */}
+            <h3>Count: {filteredData.length}</h3>
+
             {filteredData.map((data) => (
-              <div key={data["Vehicle Number"]}>
+              <div key={Math.random()}>
                 <Card>
                   <CardHeader className="grid gap-1">
                     <CardTitle className="text-base font-semibold">
@@ -343,10 +346,9 @@ function Sidebar() {
   );
 }
 
+// ... (previous code remains unchanged)
 
-function Package2Icon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
+function Package2Icon(props) {
   return (
     <svg
       {...props}
@@ -367,7 +369,7 @@ function Package2Icon(
   );
 }
 
-function BellIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function BellIcon(props) {
   return (
     <svg
       {...props}
@@ -387,7 +389,7 @@ function BellIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   );
 }
 
-function HomeIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function HomeIcon(props) {
   return (
     <svg
       {...props}
@@ -407,7 +409,7 @@ function HomeIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   );
 }
 
-function PackageIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function PackageIcon(props) {
   return (
     <svg
       {...props}
@@ -429,7 +431,7 @@ function PackageIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   );
 }
 
-function UsersIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function UsersIcon(props) {
   return (
     <svg
       {...props}
@@ -451,9 +453,7 @@ function UsersIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   );
 }
 
-function LandmarkIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
+function LandmarkIcon(props) {
   return (
     <svg
       {...props}
@@ -477,7 +477,7 @@ function LandmarkIcon(
   );
 }
 
-function BusIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function BusIcon(props) {
   return (
     <svg
       {...props}
@@ -502,9 +502,7 @@ function BusIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   );
 }
 
-function CalendarIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
+function CalendarIcon(props) {
   return (
     <svg
       {...props}
@@ -526,7 +524,7 @@ function CalendarIcon(
   );
 }
 
-function SearchIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function SearchIcon(props) {
   return (
     <svg
       {...props}
@@ -546,9 +544,7 @@ function SearchIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   );
 }
 
-function ArrowLeftIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
+function ArrowLeftIcon(props) {
   return (
     <svg
       {...props}
@@ -568,9 +564,7 @@ function ArrowLeftIcon(
   );
 }
 
-function CalendarClockIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
+function CalendarClockIcon(props) {
   return (
     <svg
       {...props}
@@ -594,7 +588,7 @@ function CalendarClockIcon(
   );
 }
 
-function MapPinIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function MapPinIcon(props) {
   return (
     <svg
       {...props}
@@ -614,7 +608,7 @@ function MapPinIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   );
 }
 
-function KeyboardIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function KeyboardIcon(props) {
   return (
     <svg
       {...props}
@@ -641,7 +635,7 @@ function KeyboardIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) 
   );
 }
 
-function CreditCardIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function CreditCardIcon(props) {
   return (
     <svg
       {...props}
@@ -661,7 +655,7 @@ function CreditCardIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
   );
 }
 
-function SettingsIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function SettingsIcon(props) {
   return (
     <svg
       {...props}
